@@ -9,8 +9,11 @@ def main():
         data_loader=user_input_data_loader,
         target_income=target_income)
     calculator.load_data()
-    calculator.calculate()
-    calculator.print_result()
+    try:
+        calculator.calculate()
+        calculator.print_result()
+    except Exception:
+        print("An error occured duing calculation")
 
 
 if __name__ == '__main__':

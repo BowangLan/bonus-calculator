@@ -41,18 +41,22 @@ class UserInputDataLoader(DataLoaderBase):
                 break
             user_input = user_input.split(' ')
             try:
-                if user_input[0] == 'a':
-                    input_data.append({
-                        'type': 'amount',
-                        'amount': float(user_input[1])
-                    })
+                if user_input[0] == 'o':
+                    data_type = 'order'
                 elif user_input[0] == 'i':
-                    input_data.append({
-                        'type': 'income',
-                        'amount': float(user_input[1])
-                    })
+                    data_type = 'income'
                 else:
                     raise Exception
             except Exception as e:
                 print("Invalid input value")
+                print(e)
+                continue
+            amount = float(user_input[1])
+            print('Data entered: type: {}; amount: {}'.format(
+                data_type, amount
+            ))
+            input_data.append({
+                'type': data_type,
+                'amount': amount
+            })
         return input_data
