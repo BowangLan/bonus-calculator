@@ -24,4 +24,6 @@ class JSONDataLoader(DataLoaderBase):
 class UserInputDataLoader(DataLoaderBase):
 
     def load_data(self):
-        pass
+        print("Instructions:")
+        while True:
+            pass
