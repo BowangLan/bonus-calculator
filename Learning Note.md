@@ -19,4 +19,4 @@ class JSONDataLoader(DataLoaderBase):
         return data
 ```
 
-In the class above, the class is a child of the `DataLoaderBase` class, and has implemented the `load_data()` method. In this case, it loads a JSON file, and return the data contained in that JSON file. Notice that file path is passed when instanciating an instance of the class, so you can access it in the `load_data()` method.
+In the class above, the class is a child of the `DataLoaderBase` class, and has implemented the `load_data()` method. In this case, it loads a JSON file, and return the data contained in that JSON file. Notice that file path is passed when instanciating an instance of the class (this is implemented in the `DataLoaderBase` class's `__init__()` method as the default behavior when creating an instance, but you can also override this method), so you can access it in the `load_data()` method.

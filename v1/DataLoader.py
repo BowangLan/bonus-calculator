@@ -2,7 +2,7 @@ import json
 
 
 class DataLoaderBase(object):
-    def __init__(self, data_path, **kwargs):
+    def __init__(self, data_path: str = None, **kwargs):
         self.data_path = data_path
 
         # default arguments for open()
@@ -23,7 +23,36 @@ class JSONDataLoader(DataLoaderBase):
 
 class UserInputDataLoader(DataLoaderBase):
 
+    INSTRUCTIONS = """Instructions for entering data:
+    - to enter an order data, enter "o <amount>" without the double quotation. 
+    Example: "o 3000" means an order of 3000 Yuan.
+    - to enter an income data, data "i <amount>" without the double quotation. 
+    Example: "i 2000" means an income of 2000 Yuan.
+    Notice that the work "income" and the amount must be separated by a space.
+    - enter "q" without double quotation to exit the data entering phase and calculate the bonus.
+    """
+
     def load_data(self):
-        print("Instructions:")
+        print(self.INSTRUCTIONS)
+        input_data = []
         while True:
-            pass
+            user_input = input("Enter data: ").strip()
+            if user_input == 'q':
+                break
+            user_input = user_input.split(' ')
+            try:
+                if user_input[0] == 'a':
+                    input_data.append({
+                        'type': 'amount',
+                        'amount': float(user_input[1])
+                    })
+                elif user_input[0] == 'i':
+                    input_data.append({
+                        'type': 'income',
+                        'amount': float(user_input[1])
+                    })
+                else:
+                    raise Exception
+            except Exception as e:
+                print("Invalid input value")
+        return input_data

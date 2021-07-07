@@ -1,14 +1,12 @@
 from v1.BonusCalculator import BonusCalculator
-from v1.DataLoader import JSONDataLoader
-
-json_file_path = 'dummy_data.json'
-target_income = 3000
+from v1.DataLoader import UserInputDataLoader
 
 
 def main():
-    data_loader = JSONDataLoader(json_file_path)
+    target_income = float(input("Enter target income: "))
+    user_input_data_loader = UserInputDataLoader()
     calculator = BonusCalculator(
-        data_loader=data_loader,
+        data_loader=user_input_data_loader,
         target_income=target_income)
     calculator.load_data()
     calculator.calculate()
