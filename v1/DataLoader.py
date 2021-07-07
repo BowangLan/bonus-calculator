@@ -19,3 +19,9 @@ class JSONDataLoader(DataLoaderBase):
         with open(self.data_path, **self.kwargs) as f:
             data = json.load(f)
         return data
+
+
+class UserInputDataLoader(DataLoaderBase):
+
+    def load_data(self):
+        pass

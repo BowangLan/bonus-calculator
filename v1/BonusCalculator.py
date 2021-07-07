@@ -35,7 +35,7 @@ class BonusCalculator(object):
 
     def calculate(self):
         """
-        :param data: a list of orders and incomes.
+        :param data: a list of items that is either orders or incomes.
         Item format: 
              - 'type': a string, possible values: 'order', 'income'
              - 'amount': a float

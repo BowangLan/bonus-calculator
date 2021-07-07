@@ -2,7 +2,17 @@
 
 This is a program for calculating the bonus given some order and some incomes.
 
-## Some Definitions
+## Usage (for users)
+
+Run the following command in the command line, or just execute the file `main.py` .
+
+```
+python main.py
+```
+
+## Usage (for developers)
+
+### Some Definitions
 
 Total income: the sum of all order's amount.
 
@@ -15,9 +25,7 @@ Order: an order adds a certain amount to the total income.
 
 Income: an income represent the incoming money that come from a certain order.
 
-Bonus:
-
-## How
+### How
 
 See this flowchard for how the bonus is calculated: https://whimsical.com/bonus-calculator-EY9iipKuBuxqHWrUMSpzqT
 
