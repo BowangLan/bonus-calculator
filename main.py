@@ -1,19 +1,13 @@
-from v1.BonusCalculator import BonusCalculator
-from v1.DataLoader import UserInputDataLoader
+import sys
+from PyQt5.QtWidgets import QApplication
+from MainWindow import MainWindow
 
 
 def main():
-    target_income = float(input("Enter target income: "))
-    user_input_data_loader = UserInputDataLoader()
-    calculator = BonusCalculator(
-        data_loader=user_input_data_loader,
-        target_income=target_income)
-    calculator.load_data()
-    try:
-        calculator.calculate()
-        calculator.print_result()
-    except Exception:
-        print("An error occured duing calculation")
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':

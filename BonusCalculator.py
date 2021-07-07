@@ -1,14 +1,12 @@
-from .DataLoader import DataLoaderBase
-
-
 class BonusCalculator(object):
-    def __init__(self, data_loader: DataLoaderBase,  target_income: float):
-        self.data_loader = data_loader
+    def __init__(self, bonus_rules, target_income: float = 0):
+        self.bonus_rules = bonus_rules
+        self.bonus_rules = self.calculate_total_bonus
         self.target_income = target_income
         self.total_income = 0
         self.actual_income = 0
 
-    def calculate_total_bonus(self, total_income, target_income=None):
+    def calculate_total_bonus(self, total_income, target_income):
         target_income = target_income if target_income else self.target_income
         percentage = float(total_income) / target_income
         if percentage < 1:
@@ -20,8 +18,7 @@ class BonusCalculator(object):
         else:
             return 0.2 * total_income
 
-    def load_data(self):
-        data = self.data_loader.load_data()
+    def parse_data(self, data):
         total_income = 0
         actual_income = 0
         for item in data:
@@ -48,7 +45,8 @@ class BonusCalculator(object):
                 actual_bonus
             )
         """
-        self.total_bonus = self.calculate_total_bonus(self.total_income)
+        self.total_bonus = self.bonus_rules(
+            self.total_income, self.target_income)
 
         self.actual_bonus = self.total_bonus * \
             (self.actual_income / self.total_income)

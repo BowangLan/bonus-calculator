@@ -1,9 +1,10 @@
 import json
 
 
-class DataLoaderBase(object):
+class DataManagerBase(object):
     def __init__(self, data_path: str = None, **kwargs):
         self.data_path = data_path
+        self.data = []
 
         # default arguments for open()
         kwargs['encoding'] = 'utf-8'
@@ -12,16 +13,23 @@ class DataLoaderBase(object):
     def load_data(self) -> list:
         pass
 
+    def save_data(self) -> None:
+        pass
 
-class JSONDataLoader(DataLoaderBase):
+
+class JSONDataManager(DataManagerBase):
 
     def load_data(self):
         with open(self.data_path, **self.kwargs) as f:
-            data = json.load(f)
-        return data
+            self.data = json.load(f)
+        return self.data
+
+    def save_data(self):
+        with open(self.data_path, 'w', **self.kwargs) as f:
+            json.dump(self.data, f)
 
 
-class UserInputDataLoader(DataLoaderBase):
+class UserInputDataLoader(DataManagerBase):
 
     INSTRUCTIONS = """Instructions for entering data:
     - to enter an order data, enter "o <amount>" without the double quotation. 
