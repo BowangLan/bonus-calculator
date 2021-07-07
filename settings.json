@@ -1,13 +1,13 @@
 {
     "data": {
-        "target_income": 1110.0
+        "target_income": 3000.0
     },
     "basic": {
-        "data_path": "/home/bowang/Dev/Python/jojo-2021-07-02/dummy_data.json",
+        "data_path": "/home/bowang/Dev/Python/jojo-2021-07-02/data.json",
         "autosave": true
     },
     "style": {
-        "order_color": "#c0fdf0",
+        "order_color": "#c0fdff",
         "income_color": "#d0d1ff"
     }
 }

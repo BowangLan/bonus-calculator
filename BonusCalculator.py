@@ -45,6 +45,8 @@ class BonusCalculator(object):
                 actual_bonus
             )
         """
+        if not self.total_income:
+            return 0, 0, 0, 0
         self.total_bonus = self.bonus_rules(
             self.total_income, self.target_income)
 

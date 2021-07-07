@@ -1,4 +1,5 @@
 import json
+import os
 
 
 class DataManagerBase(object):
@@ -20,9 +21,12 @@ class DataManagerBase(object):
 class JSONDataManager(DataManagerBase):
 
     def load_data(self):
-        with open(self.data_path, **self.kwargs) as f:
-            self.data = json.load(f)
-        return self.data
+        if os.path.exists(self.data_path):
+            with open(self.data_path, **self.kwargs) as f:
+                self.data = json.load(f)
+            return self.data
+        else:
+            self.save_data()
 
     def save_data(self):
         with open(self.data_path, 'w', **self.kwargs) as f:
