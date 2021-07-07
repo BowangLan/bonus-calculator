@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QMainWindow, QMenu, QTableWidgetItem, QInputDialog
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.uic import loadUi
-from ItemEditorDialog import ItemEditorDialog
-from SettingsEditorDialog import SettingsEditorDialog
+from ui.ItemEditorDialog import ItemEditorDialog
+from ui.SettingsEditorDialog import SettingsEditorDialog
 from SettingsManager import SettingsManager
 from DataManager import JSONDataManager
 from BonusCalculator import BonusCalculator
@@ -13,7 +13,7 @@ from time import perf_counter
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent=parent)
-        loadUi('MainUI.ui', self)
+        loadUi('ui/MainUI.ui', self)
         self.setWindowTitle("Bonus Calculator")
 
         self.settings_manager = SettingsManager()
@@ -160,7 +160,7 @@ class MainWindow(QMainWindow):
         # if add_dialog.exec_():
         #     new_item = add_dialog.get_item_value()
         item_type, status = QInputDialog.getItem(
-            self, 'New Item', 'Enter an item type', ['order', 'income'])
+            self, 'New Item', 'Enter an item type', ['order', 'income'], editable=False)
         if not status:
             return
         amount, status = QInputDialog.getDouble(
