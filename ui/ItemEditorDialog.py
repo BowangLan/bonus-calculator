@@ -5,7 +5,7 @@ from PyQt5.uic import loadUi
 class ItemEditorDialog(QDialog):
     def __init__(self, parent=None, item_type: str = None, amount: float = None):
         super(QDialog, self).__init__(parent=parent)
-        loadUi('ItemEditorDialog.ui', self)
+        loadUi('./ui/ItemEditorDialog.ui', self)
         self.invalid_message.setVisible(False)
         self.okButton.clicked.connect(self.onOK)
         self.cancelButton.clicked.connect(self.onCancel)

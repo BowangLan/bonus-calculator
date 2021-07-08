@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string notr="true">background: #FBFBFF;
@@ -86,7 +89,7 @@ color: #5e60ce;
              </font>
             </property>
             <property name="text">
-             <string>3000</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -128,7 +131,7 @@ color: #5e60ce;
              </font>
             </property>
             <property name="text">
-             <string>3000</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -199,7 +202,7 @@ border: none;
              </font>
             </property>
             <property name="text">
-             <string>3000</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -237,7 +240,7 @@ border: none;
              </font>
             </property>
             <property name="text">
-             <string>3000</string>
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -299,11 +302,7 @@ border: none;
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">padding: 8px auto;
-background: #01BAEF;
-border-radius: 16px;
-border: none;
-</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Add</string>
@@ -328,11 +327,7 @@ border: none;
            <string>Reload from local data file</string>
           </property>
           <property name="styleSheet">
-           <string notr="true">padding: 8px auto;
-background: #01BAEF;
-border-radius: 16px;
-border: none;
-</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Refresh</string>
@@ -354,11 +349,7 @@ border: none;
            </size>
           </property>
           <property name="styleSheet">
-           <string notr="true">padding: 8px auto;
-background: #01BAEF;
-border-radius: 16px;
-border: none;
-</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Save</string>
@@ -429,6 +420,24 @@ border: none;
     </property>
     <addaction name="action_open_settings"/>
    </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuOpen_Recent">
+     <property name="title">
+      <string>Open Recent...</string>
+     </property>
+     <addaction name="separator"/>
+     <addaction name="actionClear"/>
+    </widget>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="menuOpen_Recent"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave"/>
+   </widget>
+   <addaction name="menuFile"/>
    <addaction name="menuSettings"/>
   </widget>
   <action name="actionAdd_Order_2">
@@ -444,6 +453,35 @@ border: none;
   <action name="action_open_settings">
    <property name="text">
     <string>Open Settings</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="text">
+    <string>New...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="text">
+    <string>Clear</string>
    </property>
   </action>
  </widget>

@@ -6,14 +6,16 @@ class SettingsEditorDialog(QDialog):
     def __init__(self, parent=None, settings_manager=None):
         self.settings_manager = settings_manager
         super().__init__(parent=None)
-        loadUi('SettingsEditorDialog.ui', self)
+        loadUi('./ui/SettingsEditorDialog.ui', self)
 
         self.message_label.setVisible(False)
 
         self.autosave_value.setChecked(
             self.settings_manager.settings['basic']['autosave'])
-        self.data_path_value.setText(
-            self.settings_manager.settings['basic']['data_path'])
+        self.cache_path_value.setText(
+            self.settings_manager.settings['basic']['cache_path'])
+        self.autoopen_data_path_value.setText(
+            self.settings_manager.settings['basic']['autoopen_data_path'])
 
         self.order_color.setText(
             self.settings_manager.settings['style']['order_color'])
@@ -26,7 +28,8 @@ class SettingsEditorDialog(QDialog):
     def save(self):
         self.settings_manager.settings.update({
             'basic': {
-                'data_path': self.data_path_value.text(),
+                'cache_path': self.cache_path_value.text(),
+                'autoopen_data_path': self.autoopen_data_path_value.text(),
                 'autosave': self.autosave_value.isChecked(),
             },
             'style': {
@@ -34,7 +37,7 @@ class SettingsEditorDialog(QDialog):
                 'income_color': self.income_color.text()
             }
         })
-        self.settings_manager.save()
+        self.settings_manager.save_data()
         self.message_label.setStyleSheet('color: green;')
         self.message_label.setText("Settings saved succussfully")
         self.message_label.setVisible(True)

@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -38,19 +38,29 @@
             <string>Set where the data file is stored</string>
            </property>
            <property name="text">
-            <string>Data Path</string>
+            <string>Cache Path</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="data_path_value"/>
+          <widget class="QLineEdit" name="cache_path_value"/>
          </item>
-         <item row="1" column="0">
+         <item row="2" column="0">
           <widget class="QRadioButton" name="autosave_value">
            <property name="text">
             <string>Auto Save</string>
            </property>
           </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Auto Open Data Path</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="autoopen_data_path_value"/>
          </item>
         </layout>
        </item>

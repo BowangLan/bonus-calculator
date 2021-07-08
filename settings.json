@@ -1,9 +1,11 @@
 {
     "data": {
-        "target_income": 3000.0
+        "target_income": 2800.0,
+        "bonus_rules": []
     },
     "basic": {
-        "data_path": "/home/bowang/Dev/Python/jojo-2021-07-02/data.json",
+        "cache_path": "/home/bowang/Dev/Python/jojo-2021-07-02/cache.json",
+        "autoopen_data_path": "",
         "autosave": true
     },
     "style": {

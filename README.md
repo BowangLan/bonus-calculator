@@ -1,32 +1,25 @@
 # Bonus Calculator
 
 This is a program for calculating the bonus given some order and some incomes.
+See this flowchard for how the bonus is calculated: https://whimsical.com/bonus-calculator-EY9iipKuBuxqHWrUMSpzqT
 
-## Usage (for users)
+## Set up
 
-Run the following command in the command line, or just execute the file `main.py` .
+To use this program, first you have to have Python installed. Then, you need to haved PyQt5 package installed. This can be done using the following command:
+
+```
+pip install PyQt5
+```
+
+## Usage
+
+To run the program, simply run following command **under the project directory**.
 
 ```
 python main.py
 ```
 
-## Usage (for developers)
+## Current Features
 
-### Some Definitions
-
-Total income: the sum of all order's amount.
-
-Actual income: the sum of all income's amount.
-
-Order: an order adds a certain amount to the total income.
-
-- If the order's money is paid, then that money is added to the actual income. This money is called income of the order.
-- If the order's money is unpaid, this means that there's no corresponding income to this order.
-
-Income: an income represent the incoming money that come from a certain order.
-
-### How
-
-See this flowchard for how the bonus is calculated: https://whimsical.com/bonus-calculator-EY9iipKuBuxqHWrUMSpzqT
-
-The main calculation is done in the `BonusCalculator` class. When creating an instance, this class takes in an instance of `DataLoaderBase` , which will be used to load the data inside `BonusCalculator` class.
+- Display json data in the table;
+-

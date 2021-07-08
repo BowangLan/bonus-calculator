@@ -1,11 +1,10 @@
-from PyQt5.QtWidgets import QMainWindow, QMenu, QTableWidgetItem, QInputDialog
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QMenu, QTableWidgetItem, QInputDialog, QHeaderView, QFileDialog
+from PyQt5.QtCore import QFile, Qt
 from PyQt5.QtGui import QColor
 from PyQt5.uic import loadUi
 from ui.ItemEditorDialog import ItemEditorDialog
 from ui.SettingsEditorDialog import SettingsEditorDialog
-from SettingsManager import SettingsManager
-from DataManager import JSONDataManager
+from DataManager import JSONDataManager, SettingsManager
 from BonusCalculator import BonusCalculator
 from time import perf_counter
 
@@ -16,23 +15,23 @@ class MainWindow(QMainWindow):
         loadUi('ui/MainUI.ui', self)
         self.setWindowTitle("Bonus Calculator")
 
-        self.settings_manager = SettingsManager()
-        self.settings_manager.load()
-        self.settings = self.settings_manager.settings
-        self.data_manager = JSONDataManager(
-            data_path=self.settings_manager.settings['basic']['data_path'])
-        self.data_manager.load_data()
+        self.settings_manager = SettingsManager()  # auto load
+        self.cache_manager = JSONDataManager(
+            data_path=self.settings['basic']['cache_path'], default_value={'recent_opens': []})
         self.calculator = BonusCalculator(
-            bonus_rules=None,
-            target_income=self.settings_manager.settings['data']['target_income'])
+            bonus_rules=self.settings['data']['bonus_rules'])
 
+        # menu
         self.action_open_settings.triggered.connect(self.open_settings_editor)
+        self.actionNew.triggered.connect(self.create_new)
+        self.actionOpen.triggered.connect(self.open)
+        self.actionSave.triggered.connect(self.save)
 
-        # target income
-        self.target_income_value.setText("{:.2f}".format(self.target_income))
+        # target income label & button
         self.target_income_edit_button.clicked.connect(self.edit_target_income)
 
         # table
+        self.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.openRightClickMenu)
         # self.tableWidget.itemChanged.connect(self.handleItemChange)
@@ -43,11 +42,12 @@ class MainWindow(QMainWindow):
         # button clicked
         self.add_button.clicked.connect(self.add_item)
         self.save_button.clicked.connect(self.save)
-        self.refresh_button.clicked.connect(self.set_table)
+        self.refresh_button.clicked.connect(self.load_data)
 
-        # load data and calculation
-        self.set_table()
-        self.setCalculationResult()
+        if self.settings['basic']['autoopen_data_path']:
+            self.open_data_file(self.settings['basic']['autoopen_data_path'])
+
+        self.target_income_value.setText("{:.2f}".format(self.target_income))
 
     @property
     def autosave(self):
@@ -59,13 +59,23 @@ class MainWindow(QMainWindow):
 
     @target_income.setter
     def target_income(self, value: float):
+        """When settting a target income, the new value is automatically saved."""
         self.settings_manager.settings['data']['target_income'] = value
         self.target_income_value.setText("{:.2f}".format(value))
-        self.calculator.target_income = value
         self.setCalculationResult()
-        self.settings_manager.save()
+        self.settings_manager.save_data()
+
+    @property
+    def settings(self):
+        return self.settings_manager.settings
+
+    @property
+    def cache(self):
+        return self.cache_manager.data
 
     def edit_target_income(self):
+        """Edit the target income by popping user input dialog.
+        """
         result, done = QInputDialog.getDouble(
             self, "New Target Income", "Enter a new target income: ", value=self.target_income)
         if not done:
@@ -77,12 +87,38 @@ class MainWindow(QMainWindow):
             self.show_warning("Invalid target income!")
 
     def open_settings_editor(self):
+        """Open settings editor window."""
         editor = SettingsEditorDialog(settings_manager=self.settings_manager)
         editor.exec_()
 
-    def save(self):
+    def open_data_file(self, filepath):
+        self.data_manager = JSONDataManager(data_path=filepath)
+        if filepath in self.cache['recent_opens']:
+            self.cache['recent_opens'].remove(filepath)
+        self.cache['recent_opens'].insert(0, filepath)
+        self.load_data()
+
+    def open(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        file, _ = QFileDialog.getOpenFileName(
+            self, "QFileDialog.getOpenFileNames()", "", "JSON Files (*.json)", options=options)
+        if file:
+            self.open_data_file(file)
+
+    def create_new(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        files, _ = QFileDialog.getSaveFileName(
+            self, "QFileDialog.getSaveFileName()", "", "JSON Files (*.json)", options=options)
+        if files:
+            self.open_data_file(files)
+
+    def save(self, show_message=True):
         self.data_manager.save_data()
-        self.show_message("{} items saved".format(len(self.data_manager.data)))
+        if show_message:
+            self.show_message("{} items saved".format(
+                len(self.data_manager.data)))
 
     def show_message(self, msg):
         self.statusBar().setStyleSheet("")
@@ -118,6 +154,8 @@ class MainWindow(QMainWindow):
         print('Cell changed: {} {}'.format(item.row(), item.column()))
 
     def handleItemDoubleClicked(self, item):
+        """Modify an item row's value by opening a new window.
+        """
         row = item.row()
         item_type = self.data_manager.data[row]['type']
         amount = self.data_manager.data[row]['amount']
@@ -127,15 +165,20 @@ class MainWindow(QMainWindow):
             self.set_table()
             self.setCalculationResult()
             self.show_message("1 Item modified")
+            if self.autosave:
+                self.save()
 
-    def set_autosave(self, _):
-        self.autosave = self.autosave_button.isChecked()
-        print(self.autosave)
-        self.save()
+    def load_data(self):
+        """Load the data from local data file into the data manager, and
+        into then into the table."""
+        self.data_manager.load_data()
+        self.set_table()
+        self.setCalculationResult()
 
     def set_table(self):
+        """Set table data from the data manager."""
         self.renderingData = True
-        self.show_message("Loading data...")
+        self.show_message("Setting table...")
         tic = perf_counter()
         data = self.data_manager.data
         self.tableWidget.setRowCount(len(data))
@@ -156,21 +199,21 @@ class MainWindow(QMainWindow):
         self.renderingData = False
 
     def add_item(self):
-        # add_dialog = ItemEditorDialog()
-        # if add_dialog.exec_():
-        #     new_item = add_dialog.get_item_value()
-        item_type, status = QInputDialog.getItem(
-            self, 'New Item', 'Enter an item type', ['order', 'income'], editable=False)
-        if not status:
+        add_dialog = ItemEditorDialog()
+        if not add_dialog.exec_():
             return
-        amount, status = QInputDialog.getDouble(
-            self, 'New Item', 'Enter the amount')
-        if not status:
-            return
-        new_item = {"type": item_type, "amount": amount}
+        new_item = add_dialog.get_item_value()
+        # item_type, status = QInputDialog.getItem(
+        #     self, 'New Item', 'Enter an item type', ['order', 'income'], editable=False)
+        # if not status:
+        #     return
+        # amount, status = QInputDialog.getDouble(
+        #     self, 'New Item', 'Enter the amount')
+        # if not status:
+        #     return
+        # new_item = {"type": item_type, "amount": amount}
         print("New item: ", str(new_item))
         self.data_manager.data.append(new_item)
-        self.set_table()
         self.set_table()
         self.setCalculationResult()
         if self.autosave:
@@ -189,14 +232,16 @@ class MainWindow(QMainWindow):
     def openRightClickMenu(self, pos):
         menu = QMenu()
         delete_action = menu.addAction('Delete Selected Row(s)')
-
         delete_action.triggered.connect(lambda _: self.delete_rows())
-
         menu.exec_(self.mapToGlobal(pos))
 
     def setCalculationResult(self):
-        self.calculator.parse_data(data=self.data_manager.data)
-        total_income, actual_income, total_bonus, actual_bonus = self.calculator.calculate()
+        total_income,  \
+            actual_income, \
+            total_bonus,   \
+            actual_bonus = self.calculator.calculate(
+                self.data_manager.data,
+                self.target_income)
         self.current_bonus_value.setText('{:.2f}'.format(actual_bonus))
         self.total_income_value.setText('{:.2f}'.format(total_income))
         self.actual_income_value.setText('{:.2f}'.format(actual_income))

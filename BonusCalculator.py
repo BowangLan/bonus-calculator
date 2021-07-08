@@ -1,10 +1,11 @@
 class BonusCalculator(object):
-    def __init__(self, bonus_rules, target_income: float = 0):
+    def __init__(self, bonus_rules):
         self.bonus_rules = bonus_rules
         self.bonus_rules = self.calculate_total_bonus
-        self.target_income = target_income
         self.total_income = 0
         self.actual_income = 0
+        self.total_bonus = 0
+        self.actual_bonus = 0
 
     def calculate_total_bonus(self, total_income, target_income):
         target_income = target_income if target_income else self.target_income
@@ -18,19 +19,7 @@ class BonusCalculator(object):
         else:
             return 0.2 * total_income
 
-    def parse_data(self, data):
-        total_income = 0
-        actual_income = 0
-        for item in data:
-            if item['type'] == 'order':
-                total_income += float(item['amount'])
-            elif item['type'] == 'income':
-                actual_income += float(item['amount'])
-        self.total_income = total_income
-        self.actual_income = actual_income
-        return total_income, actual_income
-
-    def calculate(self):
+    def calculate(self, data: list, target_income: float):
         """
         :param data: a list of items that is either orders or incomes.
         Item format: 
@@ -45,10 +34,21 @@ class BonusCalculator(object):
                 actual_bonus
             )
         """
+        total_income = 0
+        actual_income = 0
+        for item in data:
+            if item['type'] == 'order':
+                total_income += float(item['amount'])
+            elif item['type'] == 'income':
+                actual_income += float(item['amount'])
+        self.total_income = total_income
+        self.actual_income = actual_income
+
         if not self.total_income:
             return 0, 0, 0, 0
+
         self.total_bonus = self.bonus_rules(
-            self.total_income, self.target_income)
+            self.total_income, target_income)
 
         self.actual_bonus = self.total_bonus * \
             (self.actual_income / self.total_income)
